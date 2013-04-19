@@ -2,8 +2,7 @@
 public class Rectangle {
 	
 	int height, width;
-	
-	
+		
 	public Rectangle(){
 		height = 0;
 		width = 0;

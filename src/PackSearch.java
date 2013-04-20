@@ -39,7 +39,7 @@ public class PackSearch {
 	}
 	
 	void init(){
-		recList = readRectangles("data/test.txt");
+		recList = readRectangles("data/test1.txt");
 
 		int totalH = 0, totalW = 0;
 		for (int i=0; i<numOfRec; i++){
@@ -59,7 +59,7 @@ public class PackSearch {
 		init();
 	}
 
-	public int getArea(int h, int w, int lastArea, ArrayList<Integer> list) {
+	public int getArea(int h, int w, int lastArea, ArrayList<Record> list) {
 		int minArea = maxArea; // a very large number
 		int area, a1, h1, w1, a2, h2, w2;
 		int tempResult[];
@@ -69,12 +69,11 @@ public class PackSearch {
 			if (checkList[i] == 1) {
 				checkList[i] = 0;
 				flag = 1;
-
-				list.add(i);
 				
 				int crtH = recList[i].getHeight();
 				int crtW = recList[i].getWidth();
 
+				list.add(new Record(i, 1));
 				tempResult = getIncreasedArea(crtH, crtW, h, w, 1); // up = 1
 				a1 = lastArea + tempResult[2];
 				h1 = tempResult[0];
@@ -84,6 +83,8 @@ public class PackSearch {
 					minArea = area;
 				}
 
+				list.remove(list.size()-1);
+				list.add(new Record(i, 0));
 				tempResult = getIncreasedArea(crtH, crtW, h, w, 0); // right = 0
 				a2 = lastArea + tempResult[2];
 				h2 = tempResult[0];
@@ -101,8 +102,16 @@ public class PackSearch {
 		if (flag == 1){
 			return minArea;
 		}else { // all rectangles have been checked
-			System.out.println(list.toString() + ", " + lastArea);
+			display(list);
+			System.out.println("Area = " + lastArea);
 			return lastArea;
+		}
+	}
+	
+	void display(ArrayList<Record> list){
+		for (Record record : list){
+			System.out.print(record.getNumOfRec() + ":" + record.getHowToAdd());
+			System.out.print("-->");
 		}
 	}
 
@@ -140,7 +149,7 @@ public class PackSearch {
 
 	public static void main(String args[]) {
 		PackSearch ps = new PackSearch();
-		ArrayList<Integer> logList = new ArrayList<Integer>();
+		ArrayList<Record> logList = new ArrayList<Record>();
 		System.out.println(ps.getArea(0, 0, 0, logList));
 	}
 

@@ -7,7 +7,9 @@ public class PackSearch {
 	final int MAX_NUM_OF_RECTANGLE = 100;
 	int maxArea = 0;
 	int numOfRec = 0;
-
+	int minArea = 0;
+	ArrayList<Record> recordList;
+	
 	Rectangle recList[] = null;
 	int checkList[] = null;
 	
@@ -46,8 +48,9 @@ public class PackSearch {
 			totalH += recList[i].getHeight();
 			totalW += recList[i].getWidth();
 		}
-		maxArea= totalH * totalW;
-		System.out.println(maxArea);
+		maxArea = totalH * totalW;
+		//System.out.println(maxArea);
+		minArea = maxArea;
 		
 		checkList = new int[MAX_NUM_OF_RECTANGLE];
 		for (int i = 0; i < numOfRec; i++) {
@@ -59,8 +62,52 @@ public class PackSearch {
 		init();
 	}
 
+	public void searchForMinArea(int h, int w, int finalArea, ArrayList<Record> list) {
+		int a1, h1, w1, a2, h2, w2;
+		int tempResult[];
+		int flag = 0;
+		
+		for (int i = 0; i < numOfRec; i++) {
+			if (checkList[i] == 1) {
+				checkList[i] = 0;
+				flag = 1;
+				
+				int crtH = recList[i].getHeight();
+				int crtW = recList[i].getWidth();
+
+				list.add(new Record(i, 1));
+				tempResult = getIncreasedArea(crtH, crtW, h, w, 1); // up = 1
+				a1 = finalArea + tempResult[2];
+				h1 = tempResult[0];
+				w1 = tempResult[1];
+				searchForMinArea(h1, w1, a1, list);
+
+				list.remove(list.size()-1);
+				list.add(new Record(i, 0));
+				tempResult = getIncreasedArea(crtH, crtW, h, w, 0); // right = 0
+				a2 = finalArea + tempResult[2];
+				h2 = tempResult[0];
+				w2 = tempResult[1];
+				searchForMinArea(h2, w2, a2, list);
+				
+				checkList[i] = 1;
+				list.remove(list.size()-1);
+			}
+		}
+
+		if (flag == 0){ // all rectangles have been checked
+			if (finalArea < minArea){
+				minArea = finalArea;
+				//recordList = list;
+				display(list);
+				System.out.println("Area = " + finalArea);
+			}
+		}
+	}	
+	
+	
 	public int getArea(int h, int w, int lastArea, ArrayList<Record> list) {
-		int minArea = maxArea; // a very large number
+		int minA = maxArea; // a very large number
 		int area, a1, h1, w1, a2, h2, w2;
 		int tempResult[];
 		int flag = 0;
@@ -79,8 +126,8 @@ public class PackSearch {
 				h1 = tempResult[0];
 				w1 = tempResult[1];
 				area = getArea(h1, w1, a1, list);
-				if (area < minArea) {
-					minArea = area;
+				if (area < minA) {
+					minA = area;
 				}
 
 				list.remove(list.size()-1);
@@ -90,8 +137,8 @@ public class PackSearch {
 				h2 = tempResult[0];
 				w2 = tempResult[1];
 				area = getArea(h2, w2, a2, list);
-				if (area < minArea) {
-					minArea = area;
+				if (area < minA) {
+					minA = area;
 				}
 				
 				checkList[i] = 1;
@@ -100,7 +147,7 @@ public class PackSearch {
 		}
 
 		if (flag == 1){
-			return minArea;
+			return minA;
 		}else { // all rectangles have been checked
 			display(list);
 			System.out.println("Area = " + lastArea);
@@ -150,7 +197,8 @@ public class PackSearch {
 	public static void main(String args[]) {
 		PackSearch ps = new PackSearch();
 		ArrayList<Record> logList = new ArrayList<Record>();
-		System.out.println(ps.getArea(0, 0, 0, logList));
+		//System.out.println(ps.getArea(0, 0, 0, logList));
+		ps.searchForMinArea(0, 0, 0, logList);
 	}
 
 }

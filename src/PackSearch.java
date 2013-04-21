@@ -12,6 +12,7 @@ public class PackSearch {
 	
 	Rectangle recList[] = null;
 	int checkList[] = null;
+	int searchTime = 0;
 	
 	public Rectangle[] readRectangles(String fileName) {
 		BufferedReader br = null;
@@ -40,8 +41,8 @@ public class PackSearch {
 		return rList;
 	}
 	
-	void init(){
-		recList = readRectangles("data/test1.txt");
+	void init(String fileName){
+		recList = readRectangles(fileName);
 
 		int totalH = 0, totalW = 0;
 		for (int i=0; i<numOfRec; i++){
@@ -58,8 +59,13 @@ public class PackSearch {
 		}
 	}
 
+	PackSearch(String fileName) {
+		init(fileName);
+	}
+	
 	PackSearch() {
-		init();
+		String fileName = "data/test.txt";
+		init(fileName);
 	}
 
 	public void searchForMinArea(int h, int w, int finalArea, ArrayList<Record> list) {
@@ -80,7 +86,9 @@ public class PackSearch {
 				a1 = finalArea + tempResult[2];
 				h1 = tempResult[0];
 				w1 = tempResult[1];
-				searchForMinArea(h1, w1, a1, list);
+				if (a1 < minArea){
+					searchForMinArea(h1, w1, a1, list);
+				}
 
 				list.remove(list.size()-1);
 				list.add(new Record(i, 0));
@@ -88,7 +96,9 @@ public class PackSearch {
 				a2 = finalArea + tempResult[2];
 				h2 = tempResult[0];
 				w2 = tempResult[1];
-				searchForMinArea(h2, w2, a2, list);
+				if (a2 < minArea){
+					searchForMinArea(h2, w2, a2, list);
+				}
 				
 				checkList[i] = 1;
 				list.remove(list.size()-1);
@@ -98,10 +108,13 @@ public class PackSearch {
 		if (flag == 0){ // all rectangles have been checked
 			if (finalArea < minArea){
 				minArea = finalArea;
-				//recordList = list;
+				//recordList = list;		
 				display(list);
-				System.out.println("Area = " + finalArea);
+				System.out.println("Area = " + finalArea + ", which is better.");
 			}
+			searchTime ++;
+			//display(list);
+			//System.out.println("Area = " + finalArea);
 		}
 	}	
 	
@@ -195,10 +208,12 @@ public class PackSearch {
 	}
 
 	public static void main(String args[]) {
-		PackSearch ps = new PackSearch();
+		PackSearch ps = new PackSearch("data/test3.txt");
 		ArrayList<Record> logList = new ArrayList<Record>();
 		//System.out.println(ps.getArea(0, 0, 0, logList));
 		ps.searchForMinArea(0, 0, 0, logList);
+		
+		System.out.println("The total searching time is: " + ps.searchTime);
 	}
 
 }

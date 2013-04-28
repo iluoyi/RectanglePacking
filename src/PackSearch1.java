@@ -3,7 +3,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class PackSearch {
+public class PackSearch1 {
 	final int MAX_NUM_OF_RECTANGLE = 100;
 	int maxArea = 0;
 	int numOfRec = 0;
@@ -59,11 +59,11 @@ public class PackSearch {
 		}
 	}
 
-	PackSearch(String fileName) {
+	PackSearch1(String fileName) {
 		init(fileName);
 	}
 	
-	PackSearch() {
+	PackSearch1() {
 		String fileName = "data/test.txt";
 		init(fileName);
 	}
@@ -208,7 +208,7 @@ public class PackSearch {
 	}
 
 	public static void main(String args[]) {
-		PackSearch ps = new PackSearch("data/test3.txt");
+		PackSearch1 ps = new PackSearch1("data/test.txt");
 		ArrayList<Record> logList = new ArrayList<Record>();
 		//System.out.println(ps.getArea(0, 0, 0, logList));
 		ps.searchForMinArea(0, 0, 0, logList);
